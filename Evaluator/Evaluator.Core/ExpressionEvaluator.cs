@@ -6,7 +6,7 @@ namespace Evaluator.Core
     {
         public static double Evaluate(string infix)
         {
-            var tokens = Tokenize(infix);               // 🔹 Nuevo: separar en tokens
+            var tokens = Tokenize(infix);             // 🔹 Nuevo: separar en tokens
             var postfix = InfixToPostfix(tokens);       // 🔹 Adaptado: usa tokens, no chars
             return Calculate(postfix);                  // 🔹 Adaptado: evalúa tokens decimales
         }
