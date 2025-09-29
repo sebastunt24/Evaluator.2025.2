@@ -6,14 +6,11 @@ namespace Evaluator.Core
     {
         public static double Evaluate(string infix)
         {
-            var tokens = Tokenize(infix);             // 🔹 Nuevo: separar en tokens
-            var postfix = InfixToPostfix(tokens);       // 🔹 Adaptado: usa tokens, no chars
-            return Calculate(postfix);                  // 🔹 Adaptado: evalúa tokens decimales
+            var tokens = Tokenize(infix);
+            var postfix = InfixToPostfix(tokens);
+            return Calculate(postfix);
         }
 
-        // ===============================================================
-        // 🔸 NUEVO MÉTODO: Tokenización (permite números multi-dígito y decimales)
-        // ===============================================================
         private static List<string> Tokenize(string infix)
         {
             var tokens = new List<string>();
@@ -21,22 +18,20 @@ namespace Evaluator.Core
 
             foreach (char c in infix)
             {
-                if (char.IsWhiteSpace(c)) continue; // ignorar espacios
+                if (char.IsWhiteSpace(c)) continue;
 
-                // 🔹 Si el caracter es dígito o punto, se acumula en el token actual
                 if (char.IsDigit(c) || c == '.')
                 {
                     current += c;
                 }
                 else if (IsOperator(c))
                 {
-                    // 🔹 Si ya se venía formando un número, se agrega antes de meter el operador
                     if (!string.IsNullOrEmpty(current))
                     {
                         tokens.Add(current);
                         current = string.Empty;
                     }
-                    tokens.Add(c.ToString()); // operador como token
+                    tokens.Add(c.ToString());
                 }
                 else
                 {
@@ -44,16 +39,12 @@ namespace Evaluator.Core
                 }
             }
 
-            // 🔹 Si al final queda un número pendiente, se agrega
             if (!string.IsNullOrEmpty(current))
                 tokens.Add(current);
 
             return tokens;
         }
 
-        // ===============================================================
-        // 🔸 Infix → Postfix (adaptado a tokens)
-        // ===============================================================
         private static string InfixToPostfix(List<string> tokens)
         {
             var stack = new Stack<string>();
@@ -71,7 +62,7 @@ namespace Evaluator.Core
                     {
                         while (stack.Peek() != "(")
                             postfix.Add(stack.Pop());
-                        stack.Pop(); // eliminar "("
+                        stack.Pop();
                     }
                     else
                     {
@@ -98,7 +89,7 @@ namespace Evaluator.Core
             while (stack.Count > 0)
                 postfix.Add(stack.Pop());
 
-            return string.Join(" ", postfix); // 🔹 se separan los tokens por espacios
+            return string.Join(" ", postfix);
         }
 
         private static bool IsOperator(char item)
@@ -127,9 +118,6 @@ namespace Evaluator.Core
             return double.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out _);
         }
 
-        // ===============================================================
-        // 🔸 Cálculo de expresión Postfija (adaptado a tokens decimales)
-        // ===============================================================
         private static double Calculate(string postfix)
         {
             var stack = new Stack<double>();
@@ -145,7 +133,6 @@ namespace Evaluator.Core
                 }
                 else
                 {
-                    // 🔹 Ahora soporta decimales, no solo dígitos simples
                     stack.Push(double.Parse(token, CultureInfo.InvariantCulture));
                 }
             }
